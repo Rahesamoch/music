@@ -608,7 +608,7 @@
             
             // Function to extract video ID from URL
             function extractVideoId(url) {
-                const regex = /https?:\/\/(?:www\.)?tiktok\.com\/@.+\/video\/(\d+)/;
+                const regex = /^(https?:\/\/(?:www\.)?tiktok\.com\/@.+\/video\/\d+|https:\/\/vm\.tiktok\.com\/.+)$/;
                 const match = url.match(regex);
                 return match ? match[1] : null;
             }
