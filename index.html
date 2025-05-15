@@ -246,8 +246,20 @@
             .platform-btn {
                 width: 100%;
             }
+            
+            .uploader-btn {
+    background: linear-gradient(45deg, #6a11cb, #2575fc);
+    box-shadow: 0 0 15px rgba(106, 17, 203, 0.5);
+    color: white;
+}
+
+.uploader-btn:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0 20px #6a11cb, 0 0 30px #2575fc;
+}
         }
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
@@ -257,21 +269,24 @@
     <div class="floating-neon neon-1"></div>
     <div class="floating-neon neon-2"></div>
     <div class="floating-neon neon-3"></div>
-    
+    <div class="floating-neon neon-4" style="background-color: #6a11cb; left: 50%; top: 30%; animation: float 18s 1s infinite alternate-reverse;"></div>
     <div class="container">
         <header>
             <h1>NeonDL</h1>
             <p class="tagline">Download TikTok & Spotify content in cyber quality</p>
         </header>
         
-        <div class="platform-chooser">
-            <a href="tiktok.html" class="platform-btn tiktok-btn">
-                <i class="fab fa-tiktok"></i> TikTok Downloader
-            </a>
-            <a href="spotify.html" class="platform-btn spotify-btn">
-                <i class="fab fa-spotify"></i> Spotify Downloader
-            </a>
-        </div>
+<div class="platform-chooser">
+    <a href="tiktok.html" class="platform-btn tiktok-btn">
+        <i class="fab fa-tiktok"></i> TikTok Downloader
+    </a>
+    <a href="spotify.html" class="platform-btn spotify-btn">
+        <i class="fab fa-spotify"></i> Spotify Downloader
+    </a>
+    <a href="uploader.html" class="platform-btn uploader-btn">
+        <i class="fas fa-cloud-upload-alt"></i> File Uploader
+    </a>
+</div>
         
         <footer>
             <p>NeonDL Downloader &copy; 2025 | Powered by Kenzo samp</p>

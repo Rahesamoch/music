@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeonUP - Cyberpunk File Uploader</title>
+    <style>
+        :root {
+            --neon-pink: #ff2a6d;
+            --neon-blue: #05d9e8;
+            --neon-purple: #d300c5;
+            --neon-green: #00ff9d;
+            --dark-bg: #0d0221;
+            --darker-bg: #050110;
+            --text-color: #d1f7ff;
+            --glow: 0 0 10px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Rajdhani', 'Courier New', monospace;
+        }
+
+        body {
+            background-color: var(--dark-bg);
+            color: var(--text-color);
+            min-height: 100vh;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(5, 217, 232, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(255, 42, 109, 0.1) 0%, transparent 20%),
+                linear-gradient(to bottom, var(--darker-bg), var(--dark-bg));
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            background: linear-gradient(90deg, var(--neon-pink), var(--neon-blue));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: var(--glow) var(--neon-blue), var(--glow) var(--neon-pink);
+            position: relative;
+            display: inline-block;
+        }
+
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--neon-pink), var(--neon-blue));
+            box-shadow: 0 0 15px var(--neon-pink), 0 0 30px var(--neon-blue);
+        }
+
+        .tagline {
+            font-size: 1.2rem;
+            color: var(--neon-blue);
+            letter-spacing: 2px;
+            margin-bottom: 2rem;
+            text-shadow: 0 0 5px var(--neon-blue);
+        }
+
+        .upload-container {
+            border: 2px dashed var(--neon-purple);
+            border-radius: 10px;
+            padding: 3rem 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            position: relative;
+            transition: all 0.3s;
+            background-color: rgba(211, 0, 197, 0.05);
+        }
+
+        .upload-container:hover {
+            border-color: var(--neon-blue);
+            box-shadow: 0 0 20px rgba(211, 0, 197, 0.3);
+        }
+
+        .upload-container.dragover {
+            border-color: var(--neon-green);
+            background-color: rgba(0, 255, 157, 0.05);
+            box-shadow: 0 0 30px rgba(0, 255, 157, 0.3);
+        }
+
+        .upload-icon {
+            font-size: 4rem;
+            color: var(--neon-purple);
+            margin-bottom: 1rem;
+            text-shadow: 0 0 10px var(--neon-purple);
+        }
+
+        .upload-text {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .upload-btn {
+            padding: 1rem 2rem;
+            background: linear-gradient(45deg, var(--neon-pink), var(--neon-purple));
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+            box-shadow: 0 0 15px rgba(255, 42, 109, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .upload-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 20px var(--neon-pink), 0 0 30px var(--neon-purple);
+        }
+
+        .upload-btn:active {
+            transform: translateY(0);
+        }
+
+        .file-info {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            border: 1px solid var(--neon-blue);
+            border-radius: 5px;
+            background-color: rgba(5, 217, 232, 0.05);
+            display: none;
+        }
+
+        .file-name {
+            font-weight: bold;
+            color: var(--neon-blue);
+            margin-bottom: 0.5rem;
+            word-break: break-all;
+        }
+
+        .file-size {
+            color: var(--neon-pink);
+            font-size: 0.9rem;
+        }
+
+        .progress-container {
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background-color: rgba(5, 217, 232, 0.2);
+            border-radius: 5px;
+            overflow: hidden;
+            margin-bottom: 0.5rem;
+        }
+
+        .progress {
+            height: 100%;
+            background: linear-gradient(90deg, var(--neon-pink), var(--neon-purple));
+            width: 0%;
+            transition: width 0.3s;
+            border-radius: 5px;
+        }
+
+        .progress-text {
+            font-size: 0.9rem;
+            color: var(--neon-blue);
+        }
+
+        .result-container {
+            margin-top: 2rem;
+            border: 1px solid var(--neon-blue);
+            border-radius: 8px;
+            padding: 2rem;
+            background-color: rgba(5, 217, 232, 0.05);
+            box-shadow: 0 0 20px rgba(5, 217, 232, 0.2);
+            display: none;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .result-title {
+            font-size: 1.2rem;
+            color: var(--neon-green);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .result-title i {
+            color: var(--neon-green);
+        }
+
+        .result-url {
+            word-break: break-all;
+            margin-bottom: 1rem;
+            padding: 0.8rem;
+            background-color: rgba(0, 255, 157, 0.1);
+            border-radius: 5px;
+            border-left: 3px solid var(--neon-green);
+        }
+
+        .copy-btn {
+            padding: 0.5rem 1rem;
+            background-color: rgba(0, 255, 157, 0.1);
+            border: 1px solid var(--neon-green);
+            color: var(--neon-green);
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .copy-btn:hover {
+            background-color: rgba(0, 255, 157, 0.2);
+            box-shadow: 0 0 10px var(--neon-green);
+        }
+
+        .error-message {
+            color: #ff4d4d;
+            text-align: center;
+            margin: 1rem 0;
+            display: none;
+            text-shadow: 0 0 5px rgba(255, 77, 77, 0.5);
+        }
+
+        .max-size {
+            color: var(--neon-blue);
+            font-size: 0.9rem;
+            margin-top: 1rem;
+        }
+
+        .grid-lines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(to right, rgba(5, 217, 232, 0.03) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(5, 217, 232, 0.03) 1px, transparent 1px);
+            background-size: 20px 20px;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .scanline {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, 
+                transparent 0%, 
+                rgba(5, 217, 232, 0.05) 50%, 
+                transparent 100%);
+            background-size: 100% 5px;
+            animation: scanline 5s linear infinite;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .floating-neon {
+            position: fixed;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            filter: blur(60px);
+            opacity: 0.3;
+            z-index: -1;
+        }
+
+        .neon-1 {
+            background-color: var(--neon-pink);
+            top: -100px;
+            left: -100px;
+            animation: float 15s infinite alternate;
+        }
+
+        .neon-2 {
+            background-color: var(--neon-blue);
+            bottom: -100px;
+            right: -100px;
+            animation: float 20s infinite alternate-reverse;
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0); }
+            50% { transform: translate(50px, 50px); }
+            100% { transform: translate(-50px, -50px); }
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(5, 217, 232, 0.2);
+            color: rgba(209, 247, 255, 0.5);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .upload-container {
+                padding: 2rem 1rem;
+            }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="grid-lines"></div>
+    <div class="scanline"></div>
+    <div class="floating-neon neon-1"></div>
+    <div class="floating-neon neon-2"></div>
+    
+    <div class="container">
+        <header>
+            <h1>NeonUP</h1>
+            <p class="tagline">Upload files up to 100MB with cyber speed</p>
+        </header>
+        
+        <div class="upload-container" id="upload-container">
+            <div class="upload-icon">
+                <i class="fas fa-cloud-upload-alt"></i>
+            </div>
+            <div class="upload-text">
+                Drag & drop your file here or click to browse
+            </div>
+            <input type="file" id="file-input" class="file-input">
+            <button class="upload-btn" id="upload-btn">
+                <i class="fas fa-folder-open"></i> Select File
+            </button>
+            <div class="max-size">
+                Maximum file size: 100MB
+            </div>
+        </div>
+        
+        <div class="file-info" id="file-info">
+            <div class="file-name" id="file-name">No file selected</div>
+            <div class="file-size" id="file-size">0 MB</div>
+        </div>
+        
+        <div class="progress-container" id="progress-container">
+            <div class="progress-bar">
+                <div class="progress" id="progress-bar"></div>
+            </div>
+            <div class="progress-text" id="progress-text">Uploading: 0%</div>
+        </div>
+        
+        <div class="error-message" id="error-message">
+            <i class="fas fa-exclamation-triangle"></i> <span id="error-text"></span>
+        </div>
+        
+        <div class="result-container" id="result-container">
+            <div class="result-title">
+                <i class="fas fa-check-circle"></i> Upload Successful!
+            </div>
+            <div class="result-url" id="result-url">
+                Your file URL will appear here
+            </div>
+            <button class="copy-btn" id="copy-btn">
+                <i class="fas fa-copy"></i> Copy URL
+            </button>
+        </div>
+        
+        <footer>
+            <p>NeonUP Uploader &copy; 2025 | Powered by Kenzo samp</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const uploadContainer = document.getElementById('upload-container');
+            const fileInput = document.getElementById('file-input');
+            const uploadBtn = document.getElementById('upload-btn');
+            const fileInfo = document.getElementById('file-info');
+            const fileName = document.getElementById('file-name');
+            const fileSize = document.getElementById('file-size');
+            const progressContainer = document.getElementById('progress-container');
+            const progressBar = document.getElementById('progress-bar');
+            const progressText = document.getElementById('progress-text');
+            const resultContainer = document.getElementById('result-container');
+            const resultUrl = document.getElementById('result-url');
+            const copyBtn = document.getElementById('copy-btn');
+            const errorMessage = document.getElementById('error-message');
+            const errorText = document.getElementById('error-text');
+            
+            const MAX_FILE_SIZE = 100 * 1024 * 1024; // 100MB in bytes
+            
+            // Handle file selection via button
+            uploadBtn.addEventListener('click', function() {
+                fileInput.click();
+            });
+            
+            // Handle file selection
+            fileInput.addEventListener('change', function(e) {
+                if (e.target.files.length > 0) {
+                    handleFileSelection(e.target.files[0]);
+                }
+            });
+            
+            // Handle drag and drop
+            uploadContainer.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                uploadContainer.classList.add('dragover');
+            });
+            
+            uploadContainer.addEventListener('dragleave', function() {
+                uploadContainer.classList.remove('dragover');
+            });
+            
+            uploadContainer.addEventListener('drop', function(e) {
+                e.preventDefault();
+                uploadContainer.classList.remove('dragover');
+                
+                if (e.dataTransfer.files.length > 0) {
+                    handleFileSelection(e.dataTransfer.files[0]);
+                }
+            });
+            
+            // Handle file selection
+            function handleFileSelection(file) {
+                // Reset previous state
+                hideError();
+                resultContainer.style.display = 'none';
+                
+                // Validate file size
+                if (file.size > MAX_FILE_SIZE) {
+                    showError('File size exceeds maximum limit of 100MB');
+                    return;
+                }
+                
+                // Display file info
+                fileName.textContent = file.name;
+                fileSize.textContent = formatFileSize(file.size);
+                fileInfo.style.display = 'block';
+                
+                // Upload the file
+                uploadFile(file);
+            }
+            
+            // Upload file to server
+            function uploadFile(file) {
+                const formData = new FormData();
+                formData.append('file', file);
+                
+                // Show progress
+                progressContainer.style.display = 'block';
+                progressBar.style.width = '0%';
+                progressText.textContent = 'Uploading: 0%';
+                
+                const xhr = new XMLHttpRequest();
+                
+                xhr.upload.addEventListener('progress', function(e) {
+                    if (e.lengthComputable) {
+                        const percentComplete = Math.round((e.loaded / e.total) * 100);
+                        progressBar.style.width = percentComplete + '%';
+                        progressText.textContent = 'Uploading: ' + percentComplete + '%';
+                    }
+                });
+                
+                xhr.addEventListener('load', function() {
+                    if (xhr.status === 200) {
+                        try {
+                            const response = JSON.parse(xhr.responseText);
+                            if (response.success) {
+                                showResult(response.url);
+                            } else {
+                                showError(response.message || 'Upload failed');
+                            }
+                        } catch (e) {
+                            showError('Error parsing server response');
+                        }
+                    } else {
+                        try {
+                            const errorResponse = JSON.parse(xhr.responseText);
+                            showError(errorResponse.message || 'Upload failed with status ' + xhr.status);
+                        } catch (e) {
+                            showError('Upload failed with status ' + xhr.status);
+                        }
+                    }
+                    
+                    progressContainer.style.display = 'none';
+                });
+                
+                xhr.addEventListener('error', function() {
+                    showError('Network error during upload');
+                    progressContainer.style.display = 'none';
+                });
+                
+                xhr.open('POST', 'https://api.ryzumi.vip/api/uploader/ryzencdn');
+                xhr.setRequestHeader('accept', 'application/json');
+                xhr.send(formData);
+            }
+            
+            // Show upload result
+            function showResult(url) {
+                resultUrl.textContent = url;
+                resultContainer.style.display = 'block';
+            }
+            
+            // Copy URL to clipboard
+            copyBtn.addEventListener('click', function() {
+                navigator.clipboard.writeText(resultUrl.textContent).then(function() {
+                    const originalText = copyBtn.innerHTML;
+                    copyBtn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                    setTimeout(function() {
+                        copyBtn.innerHTML = originalText;
+                    }, 2000);
+                });
+            });
+            
+            // Show error message
+            function showError(message) {
+                errorText.textContent = message;
+                errorMessage.style.display = 'block';
+            }
+            
+            // Hide error message
+            function hideError() {
+                errorMessage.style.display = 'none';
+            }
+            
+            // Format file size
+            function formatFileSize(bytes) {
+                if (bytes === 0) return '0 Bytes';
+                
+                const k = 1024;
+                const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                
+                return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+            }
+        });
+    </script>
+</body>
+</html>
