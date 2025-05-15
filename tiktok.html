@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="view.port" content="width=device-width, initial-scale=1.0">
     <title>NeonDL - TikTok Downloader</title>
     <style>
         :root {
@@ -27,7 +27,7 @@
             background-color: var(--dark-bg);
             color: var(--text-color);
             min-height: 100vh;
-            background-image: 
+            background-image:
                 radial-gradient(circle at 10% 20%, rgba(5, 217, 232, 0.1) 0%, transparent 20%),
                 radial-gradient(circle at 90% 80%, rgba(255, 42, 109, 0.1) 0%, transparent 20%),
                 linear-gradient(to bottom, var(--darker-bg), var(--dark-bg));
@@ -380,7 +380,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-image: 
+            background-image:
                 linear-gradient(to right, rgba(5, 217, 232, 0.03) 1px, transparent 1px),
                 linear-gradient(to bottom, rgba(5, 217, 232, 0.03) 1px, transparent 1px);
             background-size: 20px 20px;
@@ -394,14 +394,18 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(to bottom, 
-                transparent 0%, 
-                rgba(5, 217, 232, 0.05) 50%, 
+            background: linear-gradient(to bottom,
+                transparent 0%,
+                rgba(5, 217, 232, 0.05) 50%,
                 transparent 100%);
             background-size: 100% 5px;
             animation: scanline 5s linear infinite;
             pointer-events: none;
             z-index: -1;
+        }
+
+        @keyframes scanline {
+            to { transform: translateY(100%); }
         }
 
         .floating-neon {
@@ -447,20 +451,20 @@
             .input-container {
                 flex-direction: column;
             }
-            
+
             button {
                 width: 100%;
             }
-            
+
             .video-info {
                 flex-direction: column;
             }
-            
+
             .button-container {
                 flex-direction: column;
                 gap: 1rem;
             }
-            
+
             .back-btn, .download-all-btn {
                 width: 100%;
                 justify-content: center;
@@ -476,7 +480,7 @@
     <div class="scanline"></div>
     <div class="floating-neon neon-1"></div>
     <div class="floating-neon neon-2"></div>
-    
+
     <div class="container">
         <div class="button-container">
             <a href="index.html" class="back-btn">
@@ -486,31 +490,30 @@
                 <i class="fas fa-download"></i> Download All
             </button>
         </div>
-        
+
         <header>
             <h1><i class="fab fa-tiktok"></i> TikTok Downloader</h1>
             <p class="tagline">Download TikTok videos without watermark</p>
         </header>
-        
+
         <div class="input-container">
             <input type="text" id="tiktok-url" placeholder="Paste TikTok video URL here..." autocomplete="off">
             <button id="download-btn"><i class="fas fa-download"></i> Download</button>
         </div>
-        
+
         <div class="loading" id="loading">
             <div class="loading-spinner"></div>
             <span id="loading-text">Connecting to the cyber matrix...</span>
         </div>
-        
+
         <div class="error-message" id="error-message">
             <i class="fas fa-exclamation-triangle"></i> <span id="error-text">Error message here</span>
         </div>
-        
+
         <div class="result-container" id="result-container">
             <div class="video-info">
                 <div class="preview video-preview" id="video-preview">
-                    <!-- Preview image will be inserted here -->
-                </div>
+                    </div>
                 <div class="details">
                     <h2 class="item-title" id="video-title">Video Title</h2>
                     <div class="stats">
@@ -540,7 +543,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="download-options">
                 <h3 class="download-title">Download Options</h3>
                 <div class="quality-options">
@@ -559,9 +562,9 @@
                 </div>
             </div>
         </div>
-        
+
         <footer>
-            <p>NeonDL Downloader &copy; 2025 | Powered by Kenzo samp</p>
+            <p>NeonDL Downloader &copy; 2023 | Powered by cyber technology</p>
         </footer>
     </div>
 
@@ -575,7 +578,7 @@
             const loadingText = document.getElementById('loading-text');
             const errorMessage = document.getElementById('error-message');
             const errorText = document.getElementById('error-text');
-            
+
             // Video info elements
             const videoPreview = document.getElementById('video-preview');
             const videoTitle = document.getElementById('video-title');
@@ -586,39 +589,39 @@
             const authorAvatar = document.getElementById('author-avatar');
             const authorName = document.getElementById('author-name');
             const createTime = document.getElementById('create-time');
-            
+
             // Download buttons
             const hdBtn = document.getElementById('hd-btn');
             const wmBtn = document.getElementById('wm-btn');
             const noWmBtn = document.getElementById('no-wm-btn');
             const musicBtn = document.getElementById('music-btn');
-            
+
             let currentVideoData = null;
-            
+
             // Function to format numbers with commas
             function formatNumber(num) {
                 return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
             }
-            
+
             // Function to format date
             function formatDate(timestamp) {
                 const date = new Date(timestamp * 1000);
                 return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
             }
-            
+
             // Function to extract video ID from URL
             function extractVideoId(url) {
-                const regex = /^(https?:\/\/(?:www\.)?tiktok\.com\/@.+\/video\/\d+|https:\/\/vm\.tiktok\.com\/.+)$/;
+                const regex = /https?:\/\/(?:www\.)?tiktok\.com\/@.+\/video\/(\d+)/;
                 const match = url.match(regex);
                 return match ? match[1] : null;
             }
-            
+
             // Function to validate TikTok URL
             function isValidTikTokUrl(url) {
-                const pattern = /https?:\/\/(?:www\.)?tiktok\.com\/@.+\/video\/\d+/;
+                const pattern = /https?:\/\/(?:[www.]|vm\.)?tiktok\.com\/(?:.+\/video\/\d+|[a-zA-Z0-9]+(?:\\?.*)?)$/;
                 return pattern.test(url);
             }
-            
+
             // Function to show loading state
             function showLoading(message = 'Connecting to the cyber matrix...') {
                 loadingText.textContent = message;
@@ -626,175 +629,50 @@
                 resultContainer.style.display = 'none';
                 errorMessage.style.display = 'none';
             }
-            
+
             // Function to hide loading state
             function hideLoading() {
                 loadingElement.style.display = 'none';
             }
-            
+
             // Function to show error message
             function showError(message) {
                 errorText.textContent = message;
                 errorMessage.style.display = 'block';
                 resultContainer.style.display = 'none';
             }
-            
+
             // Function to display video data
             function displayVideoData(data) {
                 currentVideoData = data;
-                
+
                 // Set video preview
                 videoPreview.innerHTML = `<img src="${data.cover}" alt="Video thumbnail">`;
-                
+
                 // Set video info
                 videoTitle.textContent = data.title;
                 playCount.textContent = formatNumber(data.play_count);
                 likeCount.textContent = formatNumber(data.digg_count);
                 commentCount.textContent = formatNumber(data.comment_count);
                 shareCount.textContent = formatNumber(data.share_count);
-                
+
                 // Set author info
                 authorAvatar.src = data.author.avatar;
                 authorName.textContent = `@${data.author.unique_id}`;
                 createTime.textContent = `Posted: ${formatDate(data.create_time)}`;
-                
+
                 // Show result container
                 resultContainer.style.display = 'block';
             }
-            
+
             // Function to handle download
             function handleDownload(quality) {
                 if (!currentVideoData) return;
-                
+
                 let downloadUrl = '';
                 let fileExtension = 'mp4';
-                
+
                 switch(quality) {
                     case 'hd':
                         downloadUrl = currentVideoData.hdplay;
-                        break;
-                    case 'wm':
-                        downloadUrl = currentVideoData.wmplay;
-                        break;
-                    case 'no-wm':
-                        downloadUrl = currentVideoData.play;
-                        break;
-                    case 'music':
-                        downloadUrl = currentVideoData.music_info.play;
-                        fileExtension = 'mp3';
-                        break;
-                    default:
-                        downloadUrl = currentVideoData.play;
-                }
-                
-                if (!downloadUrl) {
-                    showError('Download URL not available for this quality');
-                    return;
-                }
-                
-                // Create a temporary link and trigger download
-                const a = document.createElement('a');
-                a.href = downloadUrl;
-                a.download = `tiktok_${currentVideoData.id}_${quality}.${fileExtension}`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-            }
-            
-            // Function to download all quality options
-            async function downloadAllQualities() {
-                if (!currentVideoData) {
-                    showError('No video data available');
-                    return;
-                }
-                
-                const qualities = [
-                    { name: 'hd', display: 'HD Quality', url: currentVideoData.hdplay },
-                    { name: 'wm', display: 'With Watermark', url: currentVideoData.wmplay },
-                    { name: 'no-wm', display: 'No Watermark', url: currentVideoData.play },
-                    { name: 'music', display: 'Music Only', url: currentVideoData.music_info.play }
-                ];
-                
-                showLoading('Preparing all downloads...');
-                
-                try {
-                    for (const quality of qualities) {
-                        if (quality.url) {
-                            await new Promise(resolve => {
-                                const a = document.createElement('a');
-                                a.href = quality.url;
-                                a.download = `tiktok_${currentVideoData.id}_${quality.name}.${quality.name === 'music' ? 'mp3' : 'mp4'}`;
-                                document.body.appendChild(a);
-                                a.click();
-                                document.body.removeChild(a);
-                                setTimeout(resolve, 500); // Small delay between downloads
-                            });
-                        }
-                    }
-                } catch (error) {
-                    console.error('Download error:', error);
-                    showError('Some downloads failed');
-                } finally {
-                    hideLoading();
-                }
-            }
-            
-            // Event listener for download button
-            downloadBtn.addEventListener('click', async function() {
-                const url = tiktokUrlInput.value.trim();
-                
-                if (!url) {
-                    showError('Please enter a TikTok URL');
-                    return;
-                }
-                
-                if (!isValidTikTokUrl(url)) {
-                    showError('Please enter a valid TikTok video URL');
-                    return;
-                }
-                
-                try {
-                    // Extract video ID from URL
-                    const videoId = extractVideoId(url);
-                    if (!videoId) {
-                        throw new Error('Could not extract video ID from URL');
-                    }
-                    
-                    // Call the API with Axios
-                    showLoading();
-                    const apiUrl = `https://api.ryzumi.vip/api/downloader/ttdl?url=${encodeURIComponent(url)}`;
-                    const response = await axios.get(apiUrl);
-                    
-                    if (!response.data.success || !response.data.data.data) {
-                        throw new Error(response.data.data.msg || 'Failed to fetch video data');
-                    }
-                    
-                    // Display the video data
-                    displayVideoData(response.data.data.data);
-                } catch (error) {
-                    console.error('Error:', error);
-                    showError(error.response?.data?.message || error.message || 'An error occurred while processing your request');
-                } finally {
-                    hideLoading();
-                }
-            });
-            
-            // Event listeners for quality buttons
-            hdBtn.addEventListener('click', () => handleDownload('hd'));
-            wmBtn.addEventListener('click', () => handleDownload('wm'));
-            noWmBtn.addEventListener('click', () => handleDownload('no-wm'));
-            musicBtn.addEventListener('click', () => handleDownload('music'));
-            
-            // Event listener for download all button
-            downloadAllBtn.addEventListener('click', downloadAllQualities);
-            
-            // Allow pressing Enter in the input field
-            tiktokUrlInput.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    downloadBtn.click();
-                }
-            });
-        });
-    </script>
-</body>
-</html>
+                        bre
